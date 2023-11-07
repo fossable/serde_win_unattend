@@ -1,0 +1,11 @@
+[package]
+authors = ["Tyler Cook"]
+description = "Rust serde bindings for Microsoft Windows Autounattend.xml"
+edition = "2021"
+license = "Apache 2"
+name = "serde_win_unattend"
+version = "0.1.0"
+
+[dependencies]
+quick-xml = { version = "0.31.0", features = ["serialize"] }
+serde = { version = "1.0.192", features = ["derive"] }
