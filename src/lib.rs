@@ -1,195 +1,196 @@
 //! Rust serde bindings for Microsoft Windows Autounattend.xml.
 #![allow(non_snake_case)]
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::{error::Error, path::Path};
 
 /// Represents an unattend.xml file.
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename = "unattend")]
 pub struct UnattendXml {
-	#[serde(rename = "@xmlns")]
-	pub xmlns: String,
-	pub settings: Vec<Settings>,
+    #[serde(rename = "@xmlns")]
+    pub xmlns: String,
+    pub settings: Vec<Settings>,
 }
 
 impl UnattendXml {
-	pub fn write_to(&self, path: &Path) -> Result<(), Box<dyn Error>> {
-		std::fs::write(
-			path.join("Autounattend.xml"),
-			quick_xml::se::to_string(&self).unwrap(),
-		)
-		.unwrap();
-		Ok(())
-	}
+    pub fn write_to(&self, path: &Path) -> Result<(), Box<dyn Error>> {
+        std::fs::write(
+            path.join("Autounattend.xml"),
+            quick_xml::se::to_string(&self).unwrap(),
+        )
+        .unwrap();
+        Ok(())
+    }
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename = "settings")]
 pub struct Settings {
-	#[serde(rename = "@pass")]
-	pub pass: String,
-	pub component: Vec<Component>,
+    #[serde(rename = "@pass")]
+    pub pass: String,
+    pub component: Vec<Component>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename = "component")]
 pub struct Component {
-	#[serde(rename = "@name")]
-	pub name: String,
-	#[serde(rename = "@processorArchitecture")]
-	pub processorArchitecture: String,
-	#[serde(rename = "@publicKeyToken")]
-	pub publicKeyToken: String,
-	#[serde(rename = "@language")]
-	pub language: String,
-	#[serde(rename = "@versionScope")]
-	pub versionScope: String,
-	pub ComputerName: Option<ComputerName>,
-	pub DiskConfiguration: Option<DiskConfiguration>,
-	pub ImageInstall: Option<ImageInstall>,
+    #[serde(rename = "@name")]
+    pub name: String,
+    #[serde(rename = "@processorArchitecture")]
+    pub processorArchitecture: String,
+    #[serde(rename = "@publicKeyToken")]
+    pub publicKeyToken: String,
+    #[serde(rename = "@language")]
+    pub language: String,
+    #[serde(rename = "@versionScope")]
+    pub versionScope: String,
+    pub ComputerName: Option<ComputerName>,
+    pub DiskConfiguration: Option<DiskConfiguration>,
+    pub ImageInstall: Option<ImageInstall>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct DiskConfiguration {
-	pub WillShowUI: WillShowUI,
-	pub Disk: Disk,
+    pub WillShowUI: WillShowUI,
+    pub Disk: Disk,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Disk {
-	pub CreatePartitions: CreatePartitions,
-	pub ModifyPartitions: ModifyPartitions,
-	pub WillWipeDisk: WillWipeDisk,
-	pub DiskID: DiskID,
+    pub CreatePartitions: CreatePartitions,
+    pub ModifyPartitions: ModifyPartitions,
+    pub WillWipeDisk: WillWipeDisk,
+    pub DiskID: DiskID,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct CreatePartitions {
-	pub CreatePartition: Vec<CreatePartition>,
+    pub CreatePartition: Vec<CreatePartition>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct CreatePartition {
-	pub Order: Order,
-	pub Size: Size,
-	pub Type: Type,
+    pub Order: Order,
+    pub Size: Size,
+    pub Type: Type,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct ModifyPartitions {
-	pub ModifyPartition: Vec<ModifyPartition>,
+    pub ModifyPartition: Vec<ModifyPartition>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct ModifyPartition {
-	pub Format: Format,
-	pub Label: Label,
-	pub Order: Order,
-	pub PartitionID: PartitionID,
-	pub Extend: Option<Extend>,
-	pub Letter: Option<Letter>,
+    pub Format: Format,
+    pub Label: Label,
+    pub Order: Order,
+    pub PartitionID: PartitionID,
+    pub Extend: Option<Extend>,
+    pub Letter: Option<Letter>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct ImageInstall {
-	pub OSImage: OSImage,
+    pub OSImage: OSImage,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct OSImage {
-	pub InstallTo: Option<InstallTo>,
-	// pub InstallFrom: Option<InstallFrom>,
-	pub WillShowUI: Option<WillShowUI>,
-	pub InstallToAvailablePartition: Option<InstallToAvailablePartition>,
+    pub InstallTo: Option<InstallTo>,
+    // pub InstallFrom: Option<InstallFrom>,
+    pub WillShowUI: Option<WillShowUI>,
+    pub InstallToAvailablePartition: Option<InstallToAvailablePartition>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct InstallTo {
-	pub DiskID: DiskID,
-	pub PartitionID: PartitionID,
+    pub DiskID: DiskID,
+    pub PartitionID: PartitionID,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct InstallToAvailablePartition {
-	#[serde(rename = "$value")]
-	pub value: String,
+    #[serde(rename = "$value")]
+    pub value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Format {
-	#[serde(rename = "$value")]
-	pub value: String,
+    #[serde(rename = "$value")]
+    pub value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Label {
-	#[serde(rename = "$value")]
-	pub value: String,
+    #[serde(rename = "$value")]
+    pub value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct PartitionID {
-	#[serde(rename = "$value")]
-	pub value: String,
+    #[serde(rename = "$value")]
+    pub value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Letter {
-	#[serde(rename = "$value")]
-	pub value: String,
+    #[serde(rename = "$value")]
+    pub value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Extend {
-	#[serde(rename = "$value")]
-	pub value: String,
+    #[serde(rename = "$value")]
+    pub value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct DiskID {
-	#[serde(rename = "$value")]
-	pub value: String,
+    #[serde(rename = "$value")]
+    pub value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct WillWipeDisk {
-	#[serde(rename = "$value")]
-	pub value: String,
+    #[serde(rename = "$value")]
+    pub value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Order {
-	#[serde(rename = "$value")]
-	pub value: String,
+    #[serde(rename = "$value")]
+    pub value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Size {
-	#[serde(rename = "$value")]
-	pub value: String,
+    #[serde(rename = "$value")]
+    pub value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Type {
-	#[serde(rename = "$value")]
-	pub value: String,
+    #[serde(rename = "$value")]
+    pub value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct WillShowUI {
-	#[serde(rename = "$value")]
-	pub value: String,
+    #[serde(rename = "$value")]
+    pub value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct ComputerName {
-	#[serde(rename = "$value")]
-	pub value: String,
+    #[serde(rename = "$value")]
+    pub value: String,
 }
 
+#[cfg(test)]
 mod tests {
-	use super::*;
+    use super::*;
 
     #[test]
     fn test_deserialize() {
@@ -317,6 +318,6 @@ mod tests {
             </unattend>
         "#;
 
-		let parsed: UnattendXml = quick_xml::de::from_str(raw_xml).unwrap();
+        let _: UnattendXml = quick_xml::de::from_str(raw_xml).unwrap();
     }
 }
