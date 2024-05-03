@@ -27,41 +27,114 @@ impl UnattendXml {
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename = "settings")]
 pub struct Settings {
+    pub component: Vec<Component>,
     #[serde(rename = "@pass")]
     pub pass: String,
-    pub component: Vec<Component>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename = "component")]
 pub struct Component {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ComputerName: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub DiskConfiguration: Option<DiskConfiguration>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub FirstLogonCommands: Option<FirstLogonCommands>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ImageInstall: Option<ImageInstall>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub UserAccounts: Option<Vec<LocalAccounts>>,
+    #[serde(rename = "@language")]
+    pub language: String,
     #[serde(rename = "@name")]
     pub name: String,
     #[serde(rename = "@processorArchitecture")]
     pub processorArchitecture: String,
     #[serde(rename = "@publicKeyToken")]
     pub publicKeyToken: String,
-    #[serde(rename = "@language")]
-    pub language: String,
     #[serde(rename = "@versionScope")]
     pub versionScope: String,
-    pub ComputerName: Option<String>,
-    pub DiskConfiguration: Option<DiskConfiguration>,
-    pub ImageInstall: Option<ImageInstall>,
+    #[serde(rename = "@xmlns:wcm")]
+    pub xmlns_wcm: String,
+    #[serde(rename = "@xmlns:xsi")]
+    pub xmlns_xsi: String,
+}
+
+impl Default for Component {
+    fn default() -> Self {
+        Component {
+            ComputerName: None,
+            DiskConfiguration: None,
+            FirstLogonCommands: None,
+            ImageInstall: None,
+            UserAccounts: None,
+            language: "neutral".into(),
+            name: "".into(),
+            processorArchitecture: "amd64".into(),
+            publicKeyToken: "31bf3856ad364e35".into(),
+            versionScope: "nonSxS".into(),
+            xmlns_wcm: "http://schemas.microsoft.com/WMIConfig/2002/State".into(),
+            xmlns_xsi: "http://www.w3.org/2001/XMLSchema-instance".into(),
+        }
+    }
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct FirstLogonCommands {
+    pub SynchronousCommand: Vec<SynchronousCommand>,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct SynchronousCommand {
+    pub CommandLine: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub Description: Option<String>,
+    pub Order: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub RequiresUserInput: Option<String>,
+    #[serde(rename = "@wcm:action", skip_serializing_if = "Option::is_none")]
+    pub action: Option<String>,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct LocalAccounts {
+    // pub LocalAccounts: Vec<LocalAccount>,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct LocalAccount {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub Description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub DisplayName: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub Group: Option<String>,
+    pub Name: String,
+    pub Password: Password,
+    #[serde(rename = "@wcm:action")]
+    pub action: String,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Password {
+    pub PlainText: String,
+    pub Value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct DiskConfiguration {
-    pub WillShowUI: Option<String>,
     pub Disk: Disk,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub WillShowUI: Option<String>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Disk {
     pub CreatePartitions: CreatePartitions,
+    pub DiskID: String,
     pub ModifyPartitions: ModifyPartitions,
     pub WillWipeDisk: String,
-    pub DiskID: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -71,7 +144,10 @@ pub struct CreatePartitions {
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct CreatePartition {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub Extend: Option<String>,
     pub Order: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub Size: Option<String>,
     pub Type: String,
 }
@@ -85,10 +161,10 @@ pub struct ModifyPartitions {
 pub struct ModifyPartition {
     pub Format: String,
     pub Label: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub Letter: Option<String>,
     pub Order: String,
     pub PartitionID: String,
-    pub Extend: Option<String>,
-    pub Letter: Option<String>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -98,10 +174,13 @@ pub struct ImageInstall {
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct OSImage {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub InstallTo: Option<InstallTo>,
-    // pub InstallFrom: Option<InstallFrom>,
-    pub WillShowUI: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub InstallToAvailablePartition: Option<String>,
+    // pub InstallFrom: Option<InstallFrom>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub WillShowUI: Option<String>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
