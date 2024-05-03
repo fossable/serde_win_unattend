@@ -45,6 +45,8 @@ pub struct Component {
     pub ImageInstall: Option<ImageInstall>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub UserAccounts: Option<Vec<LocalAccounts>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub UserData: Option<UserData>,
     #[serde(rename = "@language")]
     pub language: String,
     #[serde(rename = "@name")]
@@ -76,8 +78,24 @@ impl Default for Component {
             versionScope: "nonSxS".into(),
             xmlns_wcm: "http://schemas.microsoft.com/WMIConfig/2002/State".into(),
             xmlns_xsi: "http://www.w3.org/2001/XMLSchema-instance".into(),
+            UserData: None,
         }
     }
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct UserData {
+    pub AcceptEula: String,
+    pub FullName: String,
+    pub Organization: String,
+    pub ProductKey: ProductKey,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct ProductKey {
+    pub Key: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub WillShowUI: Option<String>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
