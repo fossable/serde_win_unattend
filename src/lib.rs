@@ -44,9 +44,21 @@ pub struct Component {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ImageInstall: Option<ImageInstall>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub InputLocale: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub SetupUILanguage: Option<SetupUILanguage>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub SystemLocale: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub UILanguage: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub UILanguageFallback: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub UserAccounts: Option<Vec<LocalAccounts>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub UserData: Option<UserData>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub UserLocale: Option<String>,
     #[serde(rename = "@language")]
     pub language: String,
     #[serde(rename = "@name")]
@@ -70,7 +82,14 @@ impl Default for Component {
             DiskConfiguration: None,
             FirstLogonCommands: None,
             ImageInstall: None,
+            InputLocale: None,
+            SetupUILanguage: None,
+            SystemLocale: None,
+            UILanguage: None,
+            UILanguageFallback: None,
             UserAccounts: None,
+            UserData: None,
+            UserLocale: None,
             language: "neutral".into(),
             name: "".into(),
             processorArchitecture: "amd64".into(),
@@ -78,9 +97,13 @@ impl Default for Component {
             versionScope: "nonSxS".into(),
             xmlns_wcm: "http://schemas.microsoft.com/WMIConfig/2002/State".into(),
             xmlns_xsi: "http://www.w3.org/2001/XMLSchema-instance".into(),
-            UserData: None,
         }
     }
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct SetupUILanguage {
+    pub UILanguage: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
