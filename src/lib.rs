@@ -46,6 +46,8 @@ pub struct Component {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub InputLocale: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub RunSynchronous: Option<RunSynchronous>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub SetupUILanguage: Option<SetupUILanguage>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub SystemLocale: Option<String>,
@@ -83,6 +85,7 @@ impl Default for Component {
             FirstLogonCommands: None,
             ImageInstall: None,
             InputLocale: None,
+            RunSynchronous: None,
             SetupUILanguage: None,
             SystemLocale: None,
             UILanguage: None,
@@ -99,6 +102,21 @@ impl Default for Component {
             xmlns_xsi: "http://www.w3.org/2001/XMLSchema-instance".into(),
         }
     }
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct RunSynchronous {
+    pub RunSynchronousCommand: Vec<RunSynchronousCommand>,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct RunSynchronousCommand {
+    pub Path: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub Description: Option<String>,
+    pub Order: String,
+    #[serde(rename = "@wcm:action", skip_serializing_if = "Option::is_none")]
+    pub action: Option<String>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]

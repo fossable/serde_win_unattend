@@ -4,7 +4,7 @@ description = "Rust serde bindings for Microsoft Windows Autounattend.xml"
 edition = "2021"
 license = "Apache-2.0"
 name = "serde_win_unattend"
-version = "0.3.2"
+version = "0.3.3"
 
 [dependencies]
 quick-xml = { version = "0.31.0", features = ["serialize"] }
