@@ -5,6 +5,7 @@ edition = "2021"
 license = "Apache-2.0"
 name = "serde_win_unattend"
 version = "0.3.3"
+repository = "https://github.com/fossable/serde_win_unattend"
 
 [dependencies]
 quick-xml = { version = "0.31.0", features = ["serialize"] }
