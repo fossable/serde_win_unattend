@@ -115,8 +115,8 @@ pub struct RunSynchronousCommand {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub Description: Option<String>,
     pub Order: String,
-    #[serde(rename = "@wcm:action", skip_serializing_if = "Option::is_none")]
-    pub action: Option<String>,
+    #[serde(rename = "@wcm:action")]
+    pub action: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -194,6 +194,8 @@ pub struct Disk {
     pub DiskID: String,
     pub ModifyPartitions: ModifyPartitions,
     pub WillWipeDisk: String,
+    #[serde(rename = "@wcm:action")]
+    pub action: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -209,6 +211,8 @@ pub struct CreatePartition {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub Size: Option<String>,
     pub Type: String,
+    #[serde(rename = "@wcm:action")]
+    pub action: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -224,6 +228,8 @@ pub struct ModifyPartition {
     pub Letter: Option<String>,
     pub Order: String,
     pub PartitionID: String,
+    #[serde(rename = "@wcm:action")]
+    pub action: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -251,6 +257,54 @@ pub struct InstallTo {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    use std::io::{Cursor, Write};
+    use xml::reader::{EventReader, XmlEvent};
+    use xml::writer::{EmitterConfig, EventWriter};
+
+    fn unformat(xml: &str) -> String {
+        let parser = EventReader::new(Cursor::new(xml));
+        let mut result = Vec::new();
+        let mut writer = EmitterConfig::new()
+            .perform_indent(false)
+            .write_document_declaration(false)
+            .create_writer(&mut result);
+
+        for event in parser {
+            match event {
+                Ok(XmlEvent::Characters(ref chars)) if chars.trim().is_empty() => {}
+                Ok(event) => {
+                    writer.write(event).unwrap();
+                }
+                Err(e) => panic!("Error parsing XML: {:?}", e),
+            }
+        }
+
+        String::from_utf8(result).expect("Invalid UTF-8 in XML string")
+    }
+
+    #[test]
+    fn test_serialize_1() {
+        let raw_xml = r#"
+            <?xml version="1.0" encoding="utf-8"?>
+            <unattend xmlns="urn:schemas-microsoft-com:unattend">
+            </unattend>
+        "#;
+
+        let unattended = UnattendXml {
+            xmlns: "urn:schemas-microsoft-com:unattend".into(),
+            settings: vec![Settings {
+                component: vec![Component {
+                    ..Default::default()
+                }],
+                pass: "windowsPE".into(),
+            }],
+        };
+        assert_eq!(
+            unformat(raw_xml),
+            quick_xml::se::to_string(&unattended).unwrap()
+        );
+    }
 
     #[test]
     fn test_deserialize_1() {
